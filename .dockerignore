@@ -1,0 +1,5 @@
+# Exclude Git files
+.git
+.github
+.gitignore
+
