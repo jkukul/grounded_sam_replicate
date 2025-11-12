@@ -19,7 +19,7 @@ os.chdir("/src/weights/segment-anything")
 subprocess.call([sys.executable, '-m', 'pip', 'install', '-e', '.'], env=env_vars)
 os.chdir(HOME)
 
-from cog import BasePredictor, Input, Path, BaseModel
+from cog import BasePredictor, Input, Path
 from typing import Iterator
 from groundingdino.util.slconfig import SLConfig
 from groundingdino.models import build_model

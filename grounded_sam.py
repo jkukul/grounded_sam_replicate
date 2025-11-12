@@ -1,5 +1,5 @@
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 import sys
 sys.path.insert(0, "weights/Grounded-Segment-Anything/GroundingDINO")
 sys.path.insert(0, "weights/Grounded-Segment-Anything/segment_anything")
