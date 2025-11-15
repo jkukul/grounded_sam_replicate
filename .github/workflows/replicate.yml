@@ -41,4 +41,4 @@ jobs:
           cog run script/download_weights.py
       - name: Push to Replicate
         run: |
-          cog push r8.im/schananas/grounded_sam
+          cog push r8.im/jkukul/grounded_sam
