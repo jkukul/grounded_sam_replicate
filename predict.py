@@ -55,7 +55,7 @@ class Predictor(BasePredictor):
             self,
             image: Path = Input(
                 description="Image",
-                default="https://st.mngbcn.com/rcs/pics/static/T5/fotos/outfit/S20/57034757_56-99999999_01.jpg",
+                default="https://images.pexels.com/photos/16921163/pexels-photo-16921163.jpeg",
             ),
             mask_prompt: str = Input(
                 description="Positive mask prompt",
