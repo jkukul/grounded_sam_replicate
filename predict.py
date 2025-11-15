@@ -1,23 +1,5 @@
 import os
-import sys
-import subprocess
 import torch
-
-#install GroundingDINO and segment_anything
-os.environ['CUDA_HOME'] = '/usr/local/cuda-11.7'
-os.environ['AM_I_DOCKER'] = 'true'
-os.environ['BUILD_WITH_CUDA'] = 'true'
-
-env_vars = os.environ.copy()
-HOME = os.getcwd()
-sys.path.insert(0, "weights")
-sys.path.insert(0, "weights/GroundingDINO")
-sys.path.insert(0, "weights/segment-anything")
-os.chdir("/src/weights/GroundingDINO")
-subprocess.call([sys.executable, '-m', 'pip', 'install', '-e', '.'], env=env_vars)
-os.chdir("/src/weights/segment-anything")
-subprocess.call([sys.executable, '-m', 'pip', 'install', '-e', '.'], env=env_vars)
-os.chdir(HOME)
 
 from cog import BasePredictor, Input, Path
 from typing import Iterator
@@ -27,7 +9,7 @@ from groundingdino.util.utils import clean_state_dict
 from segment_anything import build_sam, SamPredictor
 from grounded_sam import run_grounding_sam
 import uuid
-from hf_path_exports import cache_config_file, cache_file
+import groundingdino
 
 class Predictor(BasePredictor):
     def setup(self):
@@ -37,17 +19,20 @@ class Predictor(BasePredictor):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         def load_model_hf(device='cpu'):
-            args = SLConfig.fromfile(cache_config_file)
+            groundingdino_path = os.path.dirname(groundingdino.__file__)
+            config_file = os.path.join(groundingdino_path, 'config', 'GroundingDINO_SwinB_cfg.py')
+            checkpoint_file = '/weights/groundingdino_swinb_cogcoor.pth'
+            args = SLConfig.fromfile(config_file)
             args.device = device
             model = build_model(args)
-            checkpoint = torch.load(cache_file, map_location=device)
+            checkpoint = torch.load(checkpoint_file, map_location=device)
             log = model.load_state_dict(clean_state_dict(checkpoint['model']), strict=False)
-            print("Model loaded from {} \n => {}".format(cache_file, log))
+            print("Model loaded from {} \n => {}".format(checkpoint_file, log))
             _ = model.eval()
             return model
 
         self.groundingdino_model = load_model_hf(device)
-        sam_checkpoint = '/src/weights/sam_vit_h_4b8939.pth'
+        sam_checkpoint = '/weights/sam_vit_h_4b8939.pth'
         self.sam_predictor = SamPredictor(build_sam(checkpoint=sam_checkpoint).to(device))
 
     @torch.inference_mode()

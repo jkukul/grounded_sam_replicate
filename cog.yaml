@@ -10,5 +10,13 @@ build:
     - "build-essential"
   python_version: "3.10"
   python_requirements: "requirements.txt"
+  run:
+    # Re-install with proper environment variables to compile for CUDA. 
+    # Cog doesn't allow passing build-time environment variables, so it's impossible to have them when installing dependencies from requirements.txt
+    - CUDA_HOME=/usr/local/cuda-11.7 BUILD_WITH_CUDA=1 TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6" pip install -v --no-deps --force-reinstall git+https://github.com/IDEA-Research/GroundingDINO
+    - curl -o /usr/local/bin/pget -L "https://github.com/replicate/pget/releases/download/v0.8.2/pget_linux_x86_64" && chmod +x /usr/local/bin/pget
+    - mkdir -p /weights
+    - pget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth /weights/sam_vit_h_4b8939.pth
+    - pget https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha2/groundingdino_swinb_cogcoor.pth /weights/groundingdino_swinb_cogcoor.pth
 
 predict: "predict.py:Predictor"

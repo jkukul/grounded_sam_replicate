@@ -1,9 +1,5 @@
 
 from PIL import Image
-import sys
-sys.path.insert(0, "weights/Grounded-Segment-Anything/GroundingDINO")
-sys.path.insert(0, "weights/Grounded-Segment-Anything/segment_anything")
-
 from groundingdino.util import box_ops
 from groundingdino.util.inference import annotate, load_image, predict
 

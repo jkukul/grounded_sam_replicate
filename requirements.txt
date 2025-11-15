@@ -1,8 +1,12 @@
-transformers==4.30.2
-fairscale==0.4.13
+git+https://github.com/facebookresearch/segment-anything
+git+https://github.com/IDEA-Research/GroundingDINO
+# transformers,numpy,torch,torchvision are transitive dependencies (via GroundingDINO) but they are not pinned upstream,
+# so we need to pin it to the last working versions
+numpy<2
+transformers<4.41.0
 torch==1.13.0
 torchvision==0.14.0
+
 Pillow==9.5.0
 opencv-python==4.7.0.72
-addict==2.4.0
-yapf==0.40.0
+
